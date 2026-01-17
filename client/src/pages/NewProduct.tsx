@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
 import { addProduct } from "../services/ProductService";
+import ProductForm from "../components/ProductForm";
 
 export async function action({ request }: ActionFunctionArgs) {
   const data = Object.fromEntries(await request.formData());
@@ -38,30 +39,8 @@ export default function NewProduct() {
       </div>
       {error && <ErrorMessage>{error}</ErrorMessage>}
       <Form className="mt-10" method="post" action="/new-product">
-        <div className="mb-4">
-          <label className="text-gray-800" htmlFor="name">
-            Nombre Producto:
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            className="mt-2 block w-full p-3 bg-gray-50"
-            placeholder="Nombre del Producto"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="text-gray-800" htmlFor="price">
-            Precio:
-          </label>
-          <input
-            id="price"
-            name="price"
-            type="number"
-            className="mt-2 block w-full p-3 bg-gray-50"
-            placeholder="Precio Producto. ej. 200, 300"
-          />
-        </div>
+        <ProductForm />
+
         <input
           type="submit"
           className="mt-5 w-full bg-indigo-600 p-2 text-white font-bold text-lg cursor-pointer rounded-md shadow-md hover:bg-indigo-500"

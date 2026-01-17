@@ -1,10 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import {
+  Form,
+  useNavigate,
+  type ActionFunctionArgs,
+  redirect,
+} from "react-router-dom";
 import type { Product } from "../types";
 import { formatCurrency } from "../utils";
+import { deleteProduct } from "../services/ProductService";
 
 type ProductDetailsProps = {
   product: Product;
 };
+
+export async function action({ params }: ActionFunctionArgs) {
+  await deleteProduct(Number(params.id));
+  return redirect("/");
+}
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
   const isAvailable = product.availability;
@@ -21,7 +32,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       <td className="p-3 text-lg text-gray-800 ">
         <div className="flex gap-2 items-center">
           <button
-            className="cursor-pointer rounded-md bg-indigo-600 p-2 text-sm font-bold text-white shadow-md uppercase hover:bg-indigo-500"
+            className="cursor-pointer rounded-md bg-indigo-600 p-2 text-sm font-bold text-white shadow-md uppercase hover:bg-indigo-500 w-full"
             onClick={() =>
               navigate(`/products/${product.id}/edit`, {
                 state: { product: product },
@@ -30,9 +41,23 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           >
             Editar
           </button>
-          <button className="cursor-pointer rounded-md bg-indigo-600 p-2 text-sm font-bold text-white shadow-md uppercase hover:bg-red-500">
-            Eliminar
-          </button>
+          <Form
+            method="POST"
+            action={`/products/${product.id}/delete`}
+            onSubmit={(e) => {
+              if (!confirm("¿Deseas eliminar este producto?")) {
+                e.preventDefault();
+              }
+            }}
+            className="w-full"
+          >
+            <button
+              type="submit"
+              className="cursor-pointer rounded-md bg-indigo-600 p-2 text-sm font-bold text-white shadow-md uppercase hover:bg-red-500 w-full"
+            >
+              Eliminar
+            </button>
+          </Form>
         </div>
       </td>
     </tr>
